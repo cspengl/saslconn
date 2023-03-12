@@ -4,6 +4,8 @@ A connection based SASL protocol definition + implementation according to [RFC-4
 
 --- 
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/cspengl/saslconn.svg)](https://pkg.go.dev/github.com/cspengl/saslconn)
+
 This repository serves two purposes:
 
  - Proposing a [SASL connection protocol](./protocol/) described via protobuf files
