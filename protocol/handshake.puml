@@ -1,0 +1,22 @@
+@startuml handshake
+
+participant Client as c
+participant Server as s
+
+
+c <-- s : ServerMechanismAdvertisement
+
+c --> s : ClientMechanismInitiation
+
+alt
+loop
+c <-- s : ChallengeResponse
+
+c --> s : ChallengeResponse
+end
+end 
+
+c <-- s: ServerDone
+
+
+@enduml

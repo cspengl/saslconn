@@ -1,0 +1,6 @@
+
+test:
+	go test -cover ./...
+	
+gen:
+	go generate ./...

@@ -1,0 +1,112 @@
+/**
+ * SASL protocol messages.
+ * 
+ * This file contains the SASL protocol definitions according to section 4 of
+ * RFC-4422.
+ *
+ */
+syntax = "proto3";
+
+package saslproto;
+
+option go_package = ".;saslproto";
+
+
+
+// based on section 3 in RFC4422
+message Message {
+    // Type of the message indicating which of the other fields
+    // is set
+    MessageType message_type = 1; 
+    oneof payload {
+        // Payload for message type MessageTypeServerMechanismAdvertisement
+        ServerMechanismAdvertisement server_mechanism_advertisement = 2;
+        // Payload for message type MessageTypeClientInitiation
+        ClientInitiation client_initiation = 3;
+        // Payload for message type MessageTypeChallengeResponse
+        ChallengeResponse challenge_response = 4;
+        // Payload for message type MessageTypeHandshakeAbortion
+        HandshakeAbortion handshake_abortion = 5;
+        // Payload for message type MessageTypeServerDone
+        ServerDone server_done = 6;
+    }
+}
+
+// ServerMechanismAdvertisement is the first message of the handshake
+// indicating which SASL mechanisms the server supports (see section 3.2)
+message ServerMechanismAdvertisement {
+    // List of supported SASL mechanisms
+    repeated string mechanisms = 1;
+}
+
+// ClientInitiation initiates the SASL challenge-response exchange
+// between client and server by indicating the by the client selected
+// SASL mechanism and an optional initial response (see section 3.3)
+message ClientInitiation {
+    // Selected SASL mechanism
+    string mechanism = 1;
+    // Used to distinguish between nil and empty initial responses
+    // as described in section 4.3.b
+    bool initial_reponse_is_nil = 2;
+    // Optional initial response sent by the client (depending on the mechanism)
+    bytes initial_response = 3;
+}
+
+// ChallengeResponse is the message used during the challenge-response
+// phase. It either contains a challenge sent by the server or a response
+// by the client (see section 3.4).
+message ChallengeResponse {
+    // Payload in bytes
+    bytes payload = 1;
+}
+
+// HandshakeAbortion is used to abort an ongoing handshake (authentication exchange)
+// as described in section 3.5
+message HandshakeAbortion {
+    // Optional message which may be used to provide a abortion cause/ error
+    // code for the client
+    string message = 1;
+}
+
+// ServerDone is used for describing the authentication outcome
+// and sent by the server after the client initiated a mechanism
+// or the last challenge of a mechanism has been answered by the client
+// (see section 3.6)
+message ServerDone {
+    // Result of the authentication mechanism which is either
+    // success or reject
+    ServerDoneResult result = 1;
+    // Optional message which may be used to provide additional information
+    // for the client
+    string message = 2;
+}
+
+/**
+ * MessageType is used for specifying the type of
+ * message transmitted.
+ */
+ enum MessageType {
+    // Used for error cases or as fallback
+    MessageTypeUnknown = 0;
+    // Used for ServerMechanismAdvertisement messages
+    MessageTypeServerMechanismAdvertisement = 1;
+    // Used for ClientInitiation messages
+    MessageTypeClientInitiation = 2;
+    // Used for ChallengeResponse messages
+    MessageTypeChallengeResponse = 3;
+    // Used for HandshakeAbortion messages
+    MessageTypeHandshakeAbortion = 4;
+    // Used for ServerDone messages
+    MessageTypeServerDone = 5;
+}
+
+enum ServerDoneResult {
+    ResultUnknown = 0; // Used for error cases or as fallback
+    ResultSuccess = 1; // Indicating a successful authentication
+    ResultReject = 2; // Indicating that the authentication was not successful
+}
+
+
+
+
+
