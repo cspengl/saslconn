@@ -22,6 +22,8 @@ feels very familiar.
 
 **Client**
 ```golang
+package main
+
 import (
     "github.com/cspengl/saslconn"
     "github.com/emersion/go-sasl"
@@ -54,6 +56,8 @@ func main() {
 
 **Server**
 ```golang
+package main
+
 import (
     "fmt"
 
@@ -101,6 +105,8 @@ Neither SASL mechanisms nor the proposed connection protocol itself provide adeq
 
 **Example**
 ```golang
+package main
+
 import (
     "fmt"
     "crypto/tls"
